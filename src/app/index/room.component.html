@@ -1,0 +1,48 @@
+<!--<ng-progress [toggle]='toggle' [thick]='true' [showSpinner]='false' [color]="'#db5d0f'"></ng-progress>-->
+
+<div class="top" [ngStyle]="{'z-index': top}"></div>
+<div class="room">
+    <h4>{{title}}</h4>
+    <p>{{user}}</p>
+    <div *ngIf="rooms">
+        <ul class="nav nav-pills nav-stacked" id="list" role="tablist">
+            <li class="item" [ngClass]="{active: selectedRoom===room}" role="presentation" style="cursor: pointer" *ngFor="let room of rooms;" (click)="goChat(room)">
+                <a href="javascript:;">
+                    <i class="l1" *ngIf="room.name"></i>
+                    <i class="l2" *ngIf="!room.name&&room.from.username!=me.username"></i>
+                    <i class="l2" *ngIf="!room.name&&room.from.username===me.username"></i>
+                    <span class="title">
+					<span class="t1" *ngIf="room.name">
+						{{room.name}}
+					</span>
+                    <span class="t2" *ngIf="!room.name&&room.from.username!=me.username">
+						{{room.from.username}}
+					</span>
+                    <span class="t2" *ngIf="!room.name&&room.from.username===me.username">
+						{{room.to.username}}
+					</span>
+                    </span>
+                    <i class="read" *ngIf="!room.name&&isRead[room.id]">{{isRead[room.id]}}</i>
+                    <div class="msg" *ngIf="newMessage[room.id]">
+                        <span *ngIf="room.name">" {{newMessage[room.id].username}} " : </span>
+                        <span>{{newMessage[room.id].content}}</span>
+                    </div>
+                </a>
+            </li>
+        </ul>
+    </div>
+    <!--<input type="text" [(ngModel)]="name" required><button (click)="addRooms()">添加</button>-->
+</div>
+<my-news *ngIf="none" [news]='news'></my-news>
+<my-chat [user]='selectedUser' *ngIf="!none" [room]='selectedRoom'></my-chat>
+<div class="users" *ngIf="!none&&users">
+    <p>房间名单</p>
+    <i class="on"></i>在线
+    <i class="down"></i>离线
+    <ul>
+        <!--<li class="user">{{me.username}}</li>-->
+        <li [@Enter]='in' class="user" style="cursor: pointer" [ngClass]="{leave:!stateIds[user.id]}" *ngFor="let user of users" (click)="toUser(user)">{{user.username}}</li>
+    </ul>
+</div>
+<my-user *ngIf="me" [@Down]='down'></my-user>
+<div class="clear"></div>

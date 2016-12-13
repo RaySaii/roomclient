@@ -1,0 +1,6 @@
+<div class="user" [@State]='state' (mouseenter)="state='active'" (mouseleave)="state='inactive'" *ngIf="user">
+    <div>
+        <p *ngIf="state==='inactive'">{{user.username}}</p>
+        <p (click)='goLogin()' *ngIf="state==='active'">切换用户</p>
+    </div>
+</div>

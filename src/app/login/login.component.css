@@ -1,0 +1,31 @@
+
+.wrap {
+    width: 300px;
+    margin: 100px auto;
+}
+
+h2 {
+    color:white;
+    text-align: center;
+}
+
+.form-group {
+    margin: 0;
+}
+.form-control{
+    position: relative;
+}
+.btn-primary {
+    width: 100%;
+}
+.btn-danger{
+    width: 100%;
+}
+p {
+    color: white;
+    padding: 10px;
+    text-align: center;
+}
+strong{
+    cursor: pointer
+}

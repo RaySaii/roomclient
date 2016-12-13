@@ -1,0 +1,11 @@
+<div>
+    <ol type="1">
+        <li *ngFor="let item of news">
+            <a [href]="item.src" target="_blank">
+                <h5>{{item.title}}</h5>
+                <p>{{item.descript}}</p>
+                <span>{{item.time}}</span>
+            </a>
+        </li>
+    </ol>
+</div>

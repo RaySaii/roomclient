@@ -1,0 +1,164 @@
+.wrap {
+    color: white;
+}
+
+.messages {
+    margin-top: 60px;
+    height: 600px;
+    padding-bottom: 60px;
+    overflow-y: scroll;
+    padding-left: 50px;
+    padding-right: 50px;
+}
+
+.item:last-child {
+    margin-bottom: 100px;
+}
+
+h4 {
+    width: 60%;
+    padding-left: 20px;
+}
+
+.name {
+    background: #000;
+}
+
+
+/* 滚动条 */
+
+::-webkit-scrollbar-thumb:horizontal {
+    /*水平滚动条的样式*/
+    width: 5px;
+    background-color: #CCCCCC;
+    -webkit-border-radius: 6px;
+}
+
+::-webkit-scrollbar-track-piece {
+    background-color: #000;
+    /*滚动条的背景颜色*/
+    -webkit-border-radius: 4px;
+    /*滚动条的圆角宽度*/
+}
+
+::-webkit-scrollbar {
+    width: 8px;
+    /*滚动条的宽度*/
+    height: 8px;
+    /*滚动条的高度*/
+}
+
+::-webkit-scrollbar-thumb:vertical {
+    /*垂直滚动条的样式*/
+    height: 10px;
+    background-color: #999;
+    -webkit-border-radius: 4px;
+    outline: 2px solid #fff;
+    outline-offset: -2px;
+    border: 2px solid #000;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    /*滚动条的hover样式*/
+    height: 50px;
+    background-color: #9f9f9f;
+    -webkit-border-radius: 4px;
+}
+
+h4 {
+    height: 60px;
+    margin: 0;
+    line-height: 60px;
+}
+
+.name {
+    font-weight: lighter;
+    color: white;
+    position: fixed;
+    top: 0px;
+    background: #232323;
+}
+
+.myMsg {
+    text-align: right;
+}
+
+.myMsg .content {
+    background: #005BAE;
+    color: white;
+}
+
+.item {
+    margin: 20px 0px;
+}
+
+.user {
+    height: 20px;
+    font-size: 10px;
+}
+
+.who {
+    margin: 30px 0;
+}
+
+.content {
+    padding: 14px;
+    color: #000000;
+    background: white;
+    position: relative;
+}
+
+.dire {
+    display: block;
+    width: 0px;
+    height: 0px;
+    position: absolute;
+    left: -8px;
+    top: 10px;
+    border-top: 4px solid transparent;
+    border-right: 8px solid white;
+    border-bottom: 4px solid transparent;
+}
+
+.myMsg .dire {
+    border: 0px;
+    left: 100%;
+    right: -8px;
+    border-top: 4px solid transparent;
+    border-left: 8px solid #005BAE;
+    border-bottom: 4px solid transparent;
+}
+
+.send {
+    width: 60%;
+    height: 40px;
+    line-height: 40px;
+    position: fixed;
+    bottom: 0px;
+}
+
+.send input {
+    float: left;
+    border: 0px;
+    font-weight: lighter;
+    width: 80%;
+    color: #000;
+    height: 40px;
+    line-height: 40px;
+    padding-left: 20px;
+    font-size: 16px;
+    outline: none;
+    box-sizing: border-box;
+}
+
+.send button {
+    float: left;
+    outline: none;
+    border: 0px;
+    height: 40px;
+    margin-left: 0;
+    line-height: 40px;
+    text-align: center;
+    background: #000;
+    width: 20%;
+}

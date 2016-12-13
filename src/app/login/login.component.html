@@ -1,0 +1,14 @@
+<div class="wrap">
+  <h2>登录</h2>
+  <form role='form' (ngSubmit)="submit()" #loginForm="ngForm">
+    <div class="form-group">
+      <input class="form-control" type="text" placeholder="邮箱/用户名" required name="email_name" [(ngModel)]="user.email_name"><br>
+    </div>
+    <div class="form-group">
+      <input class="form-control" type="password" placeholder="密码" required name="password" [(ngModel)]="user.password"><br>
+    </div>
+    <button class="btn btn-primary" *ngIf="!error" (keyup.enter)="submit()" type="submit" [disabled]="!loginForm.form.valid">登录</button>
+    <button class="btn btn-danger" *ngIf="error" [disabled]="true">{{error}}</button>
+    <p>没有账号？<strong (click)="goRegister()">快去注册</strong></p>
+  </form>
+</div>

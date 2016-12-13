@@ -1,0 +1,14 @@
+.user {
+    color: #fff;
+    width: 100px;
+    padding: 0px;
+    background: #005BAE;
+    cursor: pointer;
+}
+
+.user p {
+    height: 30px;
+    text-align: center;
+    line-height: 30px;
+    font-size: 12px;
+}

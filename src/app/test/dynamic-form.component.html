@@ -1,0 +1,13 @@
+<div>
+	{{info}}
+	<form  (ngSubmit)="onSubmit()" [formGroup]="form">
+		<div *ngFor="let question of questions">
+			<df-question [question]="question" [form]="form"></df-question>
+		</div>
+		<button type="submit" [disabled]="!form.valid">保存</button>
+	</form>
+	
+	<div *ngIf="payLoad">
+		<strong>保存以下</strong><br>{{payLoad}}
+	</div>
+</div>

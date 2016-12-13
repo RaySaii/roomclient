@@ -1,0 +1,28 @@
+ol {
+    color: #000;
+    font-weight: normal;
+}
+
+ol li {
+    padding: 20px;
+    padding-right: 40px;
+    border-bottom: 1px solid white;
+}
+
+ol li a {
+    color: #000;
+    text-decoration: none;
+}
+
+ol li a:hover {
+    color: #005BAE;
+}
+
+p {
+    font-size: 12px;
+}
+
+span {
+    font-size: 10px;
+    color: #ccc
+}

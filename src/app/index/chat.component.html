@@ -1,0 +1,25 @@
+<div class="wrap" *ngIf="room">
+    <h4 class="name" *ngIf="room.name">「{{room.name}}」</h4>
+    <h4 class="name" *ngIf="!room.name&&room.from.username!=myname">「{{room.from.username}}」</h4>
+    <h4 class="name" *ngIf="!room.name&&room.from.username===myname">「{{room.to.username}}」</h4>
+    <div class="messages" #list [scrollTop]="list.scrollHeight" *ngIf="messages">
+        <div class="item" *ngFor="let message of messages" [ngClass]="{'myMsg': message.username===username}">
+            <div class="who">
+                <span class="user">
+				{{message.username}}
+			</span>
+                <span class="time">
+				{{message.sendAt | myTime }}
+			</span>
+            </div>
+            <span class="content">
+				{{message.content}}
+            	<i class="dire"></i>
+			</span>
+        </div>
+    </div>
+    <div class="send">
+        <input #msg placeholder="在此输入信息..." type="text" [(ngModel)]="text" (keyup.enter)="sendMessage(text)">
+        <button [disabled]='!msg.value' (click)="sendMessage(text)">发送</button>
+    </div>
+</div>
