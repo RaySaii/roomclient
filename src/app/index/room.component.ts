@@ -98,13 +98,13 @@ export class RoomComponent implements OnInit, OnDestroy {
     }
 
     ngOnInit() {
+        this.chatService.joinRoom('5829b48266e5156306ba4dcf');
+        this.chatService.joinRoom('5829b74f66e5156306ba4dd0');
         this.start();
         setTimeout(() => {
             this.stop();
             this.top = 999;
         }, 2000);
-
-
         this.roomService.getNews().map(res => res.json()).subscribe(res => {
             this.news = res;
         });
@@ -113,9 +113,6 @@ export class RoomComponent implements OnInit, OnDestroy {
                 this.news = res;
             });
         }, 600000);
-
-        this.chatService.joinRoom('5829b48266e5156306ba4dcf');
-        this.chatService.joinRoom('5829b74f66e5156306ba4dd0');
         this.username = this.cookieService.get('username');
         this.userId = localStorage.getItem('userId');
         this.roomService.getRooms(this.userId)

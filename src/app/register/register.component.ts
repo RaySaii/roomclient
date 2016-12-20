@@ -1,10 +1,9 @@
-import {Component} from '@angular/core';
-import {User} from "../models/user";
-import {FormGroup, FormBuilder, Validators, FormControl} from "@angular/forms";
-import {RegisterService} from "../services/register.service";
-import {Observable} from "rxjs";
-import {Router, ActivatedRoute} from "@angular/router";
-import set = Reflect.set;
+import { Component } from '@angular/core';
+import { User } from "../models/user";
+import { FormGroup, FormBuilder, Validators, FormControl } from "@angular/forms";
+import { RegisterService } from "../services/register.service";
+import { Observable, Subject } from "rxjs";
+import { Router, ActivatedRoute } from "@angular/router";
 
 @Component({
     selector: 'app-register',
@@ -19,6 +18,10 @@ export class RegisterComponent {
     emailSend: boolean = false;
     emailError: boolean = false;
     emailNot: boolean = false;
+    termU = new Subject<string>();
+    termE = new Subject<string>();
+    useableU: boolean = true;
+    useableE: boolean = true;
 
     constructor(private router: Router, private route: ActivatedRoute, private fb: FormBuilder, public registerService: RegisterService) {
     }
@@ -26,6 +29,7 @@ export class RegisterComponent {
     ngOnInit() {
         this.buildForm();
     }
+
 
     buildForm() {
         this.userForm = this.fb.group({
@@ -35,14 +39,12 @@ export class RegisterComponent {
                     Validators.minLength(4),
                     Validators.maxLength(30),
                 ]),
-                this.checkUsed.bind(this)
             ],
             'email': ['',
                 Validators.compose([
                     Validators.required,
                     Validators.pattern("[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?")
                 ]),
-                this.checkUsed.bind(this)
             ],
             'password': ['', [
                 Validators.required,
@@ -53,6 +55,30 @@ export class RegisterComponent {
                 this.conPass.bind(this)
             ]]
         })
+        this.termU
+            .filter(value => value.length >= 4)
+            .debounceTime(500)
+            .distinctUntilChanged()
+            .switchMap((value: string) => this.registerService.checkUsed(value))
+            .map(res => res.json())
+            .subscribe(res => {
+                if (res.useable)
+                    this.useableU = true;
+                else
+                    this.useableU = false;
+            })
+        this.termE
+            .filter(val => val.indexOf('@') > -1 && val.indexOf('.') > -1)
+            .debounceTime(500)
+            .distinctUntilChanged()
+            .switchMap(val => this.registerService.checkUsed(val))
+            .map(res => res.json())
+            .subscribe(res => {
+                if (res.useable)
+                    this.useableE = true;
+                else
+                    this.useableE = false;
+            })
 
         this.userForm.valueChanges.subscribe(data => {
             this.onValueChanged(data);
@@ -117,7 +143,6 @@ export class RegisterComponent {
     submit() {
         this.emailError = this.emailNot = this.emailSend = false;
         this.user = new User(this.userForm.value);
-        console.log(1)
         this.registerService.register(this.user).subscribe(
             res => {
             },
@@ -133,7 +158,7 @@ export class RegisterComponent {
             }
         )
         this.emailSend = true;
-        setTimeout(() => this.router.navigate(['../login'], {relativeTo: this.route}), 1000)
+        setTimeout(() => this.router.navigate(['../login'], { relativeTo: this.route }), 1000)
     };
 
     conPass(c: FormControl) {
@@ -141,60 +166,74 @@ export class RegisterComponent {
             return null
         }
         else {
-            return {notmatch: true}
+            return { notmatch: true }
         }
     }
-
-    checkUsed(c: FormControl): Observable<any|Object> {
-        return new Observable((obs: any) => {
-            c.valueChanges
-                .debounceTime(500)
-                .distinctUntilChanged()
-                .flatMap(value => value ? this.registerService.checkUsed(value) : Observable.of(0))
-                .subscribe(
-                    res => {
-                        if (res === 0) {
-                            obs.next({required: true})
-                        } else {
-                            res = res.json();
-                            if (res.useable)
-                                obs.next(null);
-                            else
-                                obs.next({used: true});
-                        }
-                        obs.complete();
-                    },
-                    err => {
-                        console.log(err)
-                    }
-                )
-        })
-        // return c.valueChanges
-        // // .filter(value => value.length >= 4)
-        //     .do(value => console.log(value))
-        //     .debounceTime(500)
-        //     .distinctUntilChanged()
-        //     .take(1)
-        //     .switchMap(value => {
-        //         if (value) {
-        //             return this.registerService.checkUsed(value)
-        //         }
-        //         else {
-        //             return Observable.of({required:"true"})
-        //         }
-        //     })
-        //     .map((res) => {
-        //         if (res) {
-        //             console.log(res)
-        //             res = res.json()
-        //             if (res.useable)
-        //                 return null;
-        //             else
-        //                 return {used: true}
-        //         }
-        //     })
-        // // }
+    searchU(data: string) {
+        this.termU.next(data);
     }
+    searchE(data: string) {
+        this.termE.next(data);
+    }
+
+    // checkUsed(c: FormControl): Observable<any | Object> {
+    //     return new Observable((obs: any) => {
+    //         if (c.value.split('').length < 4) {
+    //             obs.next({ minlength: true })
+    //             obs.complete();
+    //         } else {
+    //             let term = new Subject<string>();
+    //             c.valueChanges
+    //                 .debounceTime(500)
+    //                 .distinctUntilChanged()
+    //                 .subscribe(value => {
+    //                     term.next(value)
+    //                 })
+    //             term
+    //                 .do(value => console.log(value))
+    //                 .switchMap((value: string) => this.registerService.checkUsed(value))
+    //                 .subscribe(res => {
+    //                     let data = res.json();
+    //                     if (data.useable)
+    //                         obs.next(null);
+    //                     else
+    //                         obs.next({ used: true });
+
+    //                     obs.complete();
+    //                 },
+    //                 err => {
+    //                     console.log(err)
+    //                     obs.complete();
+    //                 }
+    //                 )
+    //         }
+    //     })
+    //     // return c.valueChanges
+    //     // // .filter(value => value.length >= 4)
+    //     //     .do(value => console.log(value))
+    //     //     .debounceTime(500)
+    //     //     .distinctUntilChanged()
+    //     //     .take(1)
+    //     //     .switchMap(value => {
+    //     //         if (value) {
+    //     //             return this.registerService.checkUsed(value)
+    //     //         }
+    //     //         else {
+    //     //             return Observable.of({required:"true"})
+    //     //         }
+    //     //     })
+    //     //     .map((res) => {
+    //     //         if (res) {
+    //     //             console.log(res)
+    //     //             res = res.json()
+    //     //             if (res.useable)
+    //     //                 return null;
+    //     //             else
+    //     //                 return {used: true}
+    //     //         }
+    //     //     })
+    //     // // }
+    // }
 }
 
 

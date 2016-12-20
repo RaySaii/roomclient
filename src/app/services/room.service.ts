@@ -3,7 +3,7 @@
  */
 import { Injectable } from '@angular/core';
 import { Room } from '../models/room';
-import { Http, Headers } from '@angular/http'
+import { Http, Headers } from '@angular/http';
 import { User } from "../models/user";
 import { URL } from './url';
 

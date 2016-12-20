@@ -1,54 +1,51 @@
 <div class="wrap">
-	<h2>注册</h2>
-	<form role='form' (ngSubmit)="submit()" [formGroup]="userForm">
-		<div class="form-group">
-			<label for="username">用户名</label><br>
-			<input class="form-control" type="text" name="username" id="username" required
-			       formControlName="username">
-			<!--<div [hidden]="name.valid||name.pristine">name is required</div>-->
-			<div class="alert alert-danger" *ngIf="formErrors.username&&!userForm.get('username').hasError('used')">
-				{{ formErrors.username}}
-			</div>
-			<div class="alert alert-danger" *ngIf="userForm.get('username').hasError('used')">
-				用户名已被使用
-			</div>
-		</div>
-		<div class="form-group">
-			<label for="email">邮箱</label><br>
-			<input class="form-control" type="email" name="email" id="email" required formControlName="email">
-			<div class="alert alert-danger" *ngIf="formErrors.email&&!userForm.get('email').hasError('used')">
-				{{ formErrors.email}}
-			</div>
-			<div class="alert alert-danger" *ngIf="userForm.get('email').hasError('used')">
-				邮箱已被使用
-			</div>
-		</div>
-		<div class="form-group">
-			<label for="password">密码</label><br>
-			<input class="form-control" type="password" name="password" id="password" [(ngModel)]="password" required
-			       formControlName="password">
-			<div class="alert alert-danger" *ngIf="formErrors.password">
-				{{ formErrors.password}}
-			</div>
-		</div>
-		<div class="form-group">
-			<label for="confirm_password">确认密码</label><br>
-			<input class="form-control" type="password" name="confirm_password" id="confirm_password" required
-			       formControlName="confirm_password">
-			<div class="alert alert-danger" *ngIf="formErrors.confirm_password">
-				{{ formErrors.confirm_password}}
-			</div>
-		</div>
-		<div>
-			<!--<label for="sorter">类型</label>-->
-			<!--<select name="sorter" id="sorter" required>-->
-			<!--<option [value]="opt" *ngFor="let opt of sorters">{{opt}}</option>-->
-			<!--</select>-->
-		</div>
-		<button class="btn btn-primary" type="submit" [disabled]="!userForm.valid">注册</button>
-		<button class="btn btn-default" type="reset">重置</button>
-	</form>
-	<div class="tip ok" *ngIf="emailSend">已发送认证邮件到你的邮箱</div>
-	<div class="tip error" *ngIf="emailError">邮箱不存在</div>
-	<div class="tip error" *ngIf="emailNot">邮箱不存在</div>
+    <h2>注册</h2>
+    <form role='form' (ngSubmit)="submit()" [formGroup]="userForm">
+        <div class="form-group">
+            <label for="username">用户名</label><br>
+            <input [ngClass]="{err: !useableU}" class="form-control" #username (keyup)="searchU(username.value)" type="text" name="username" id="username" required formControlName="username">
+            <!--<div [hidden]="name.valid||name.pristine">name is required</div>-->
+            <div class="alert alert-danger" *ngIf="formErrors.username">
+                {{ formErrors.username}}
+            </div>
+            <div class="alert alert-danger" *ngIf="!useableU">
+                用户名已被使用
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="email">邮箱</label><br>
+            <input [ngClass]="{err: !useableE}" #email (keyup)="searchE(email.value)" class="form-control" type="email" name="email" id="email" required formControlName="email">
+            <div class="alert alert-danger" *ngIf="formErrors.email">
+                {{ formErrors.email}}
+            </div>
+            <div class="alert alert-danger" *ngIf="!useableE">
+                邮箱已被使用
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="password">密码</label><br>
+            <input class="form-control" type="password" name="password" id="password" [(ngModel)]="password" required formControlName="password">
+            <div class="alert alert-danger" *ngIf="formErrors.password">
+                {{ formErrors.password}}
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="confirm_password">确认密码</label><br>
+            <input class="form-control" type="password" name="confirm_password" id="confirm_password" required formControlName="confirm_password">
+            <div class="alert alert-danger" *ngIf="formErrors.confirm_password">
+                {{ formErrors.confirm_password}}
+            </div>
+        </div>
+        <div>
+            <!--<label for="sorter">类型</label>-->
+            <!--<select name="sorter" id="sorter" required>-->
+            <!--<option [value]="opt" *ngFor="let opt of sorters">{{opt}}</option>-->
+            <!--</select>-->
+        </div>
+        <button class="btn btn-primary" type="submit" [disabled]="!userForm.valid||!useableU||!useableE">注册</button>
+        <button class="btn btn-default" type="reset">重置</button>
+    </form>
+    <div class="tip ok" *ngIf="emailSend">已发送认证邮件到你的邮箱</div>
+    <div class="tip error" *ngIf="emailError">邮箱不存在</div>
+    <div class="tip error" *ngIf="emailNot">邮箱不存在</div>
 </div>

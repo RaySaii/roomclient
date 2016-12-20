@@ -1,10 +1,15 @@
-
 .ng-valid:not(form) {
-    border-left: 5px solid #42A948; /* green */
+    border-left: 5px solid #42A948;
+    /* green */
+}
+
+.err {
+    border-left: 5px solid #a94442 !important;
 }
 
 .ng-invalid:not(form) {
-    border-left: 5px solid #a94442; /* red */
+    border-left: 5px solid #a94442;
+    /* red */
 }
 
 .ng-pristine:not(form) {
@@ -19,7 +24,8 @@
 .form-group {
     position: relative;
 }
-.form-control{
+
+.form-control {
     border: 0px;
 }
 
@@ -40,21 +46,22 @@
     float: right;
     width: 30%;
 }
-h2{
+
+h2 {
     color: white;
 }
-label{
+
+label {
     color: white;
 }
-.tip{
+
+.tip {
     text-align: center;
     margin-top: 20px;
     color: white;
 }
-.error{
+
+.error {
     text-align: center;
     color: #ff2808;
 }
-
-
-
