@@ -15,6 +15,9 @@ export class UserService {
 
     constructor(private http: Http, private cookieService: CookieService) {
     }
+    findUser(username: string) {
+        return this.http.get(`${this.userUrl}/findOne?filter[where][username]=${username}`)
+    }
 
     getUser(userId: string) {
         let headers = this.setToken();

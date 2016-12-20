@@ -45,7 +45,7 @@
         <button class="btn btn-primary" type="submit" [disabled]="!userForm.valid||!useableU||!useableE">注册</button>
         <button class="btn btn-default" type="reset">重置</button>
     </form>
-    <div class="tip ok" *ngIf="emailSend">已发送认证邮件到你的邮箱</div>
+    <div class="tip ok" *ngIf="emailSend">已发送认证邮件到你的邮箱,请稍等</div>
     <div class="tip error" *ngIf="emailError">邮箱不存在</div>
     <div class="tip error" *ngIf="emailNot">邮箱不存在</div>
 </div>

@@ -7,6 +7,7 @@ import { URL } from './url';
 
 @Injectable()
 export class RegisterService {
+    userUrl = `${process.env.rest}chatusers`;
 
     constructor(
         private http: Http) { }
@@ -20,5 +21,13 @@ export class RegisterService {
     // }
     checkUsed(value: string) {
         return this.http.post(`${this.restUrl}/checkused`, { email_name: value })
+    }
+    joinRoom(roomId: string) {
+        // console.log('服务段执行执行加入', roomId);
+        // this.socket.emit('join', roomId);
+        let userId = localStorage.getItem('userId');
+        // let headers = this.setToken();
+        return this.http.post(`${this.userUrl}/joinroom`, { room_id: roomId, user_id: userId });
+        // this.socket.on('message',(msg)=>console.log(msg))
     }
 }

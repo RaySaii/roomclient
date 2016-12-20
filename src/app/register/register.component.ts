@@ -4,12 +4,13 @@ import { FormGroup, FormBuilder, Validators, FormControl } from "@angular/forms"
 import { RegisterService } from "../services/register.service";
 import { Observable, Subject } from "rxjs";
 import { Router, ActivatedRoute } from "@angular/router";
+import { UserService } from '../services/user.service';
 
 @Component({
     selector: 'app-register',
     templateUrl: './register.component.html',
     styleUrls: ['./register.component.css'],
-    providers: [RegisterService]
+    providers: [RegisterService, UserService]
 })
 export class RegisterComponent {
     user: User;
@@ -23,7 +24,7 @@ export class RegisterComponent {
     useableU: boolean = true;
     useableE: boolean = true;
 
-    constructor(private router: Router, private route: ActivatedRoute, private fb: FormBuilder, public registerService: RegisterService) {
+    constructor(private userService: UserService, private router: Router, private route: ActivatedRoute, private fb: FormBuilder, public registerService: RegisterService) {
     }
 
     ngOnInit() {
@@ -158,7 +159,18 @@ export class RegisterComponent {
             }
         )
         this.emailSend = true;
-        setTimeout(() => this.router.navigate(['../login'], { relativeTo: this.route }), 1000)
+        setTimeout(() => {
+            this.userService.findUser(this.user.username).map(res => res.json()).subscribe(res => {
+                console.log(res)
+                localStorage.setItem('userId', res.id);
+                this.registerService.joinRoom('5829b48266e5156306ba4dcf').subscribe();
+                this.registerService.joinRoom('5829b74f66e5156306ba4dd0').subscribe(res => {
+                    this.router.navigate(['../login'], { relativeTo: this.route })
+                });
+            })
+            this.emailSend = true;
+        }, 2000)
+
     };
 
     conPass(c: FormControl) {

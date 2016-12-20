@@ -100,41 +100,36 @@ export class RoomComponent implements OnInit, OnDestroy {
 
     ngOnInit() {
         this.start()
-        this.chatService.joinRoom('5829b48266e5156306ba4dcf').subscribe(() => {
-            // this.start();
-            // setTimeout(() => {
-
-            // }, 2000);
-            this.chatService.joinRoom('5829b74f66e5156306ba4dd0').subscribe(() => {
-                this.roomService.getRoomUsers('5829b74f66e5156306ba4dd0').map(res => res.json()).subscribe(res => {
-                    this.preUsers = res
-                });
-                this.roomService.getRooms(this.userId)
-                    .subscribe(rooms => {
-                        // console.log(rooms)
-                        this.rooms = rooms;
-                        this.goChat(this.rooms.find(room => room.id === '5829b48266e5156306ba4dcf'));
-                        this.stop();
-                        this.top = 999;
-                        this.rooms.map(room => {
-                            if (!room.name) {
-                                this.chatService.getRead(room.id, this.username).map(res => res.json()).subscribe(
-                                    res => {
-                                        // console.log(res);
-                                        this.isRead[room.id] = res.count;
-                                    }
-                                );
-                            }
-                            this.chatService.getRoomMessages(room.id).subscribe(
-                                msgs => {
-                                    this.newMessage[room.id] = msgs.pop()
-                                }
-                            )
-                            this.chatService.joinRoom(room.id)
-                        })
-                    });
-            });
+        this.username = this.cookieService.get('username');
+        this.userId = localStorage.getItem('userId');
+        this.roomService.getRoomUsers('5829b74f66e5156306ba4dd0').map(res => res.json()).subscribe(res => {
+            this.preUsers = res
         });
+        this.roomService.getRooms(this.userId)
+            .subscribe(rooms => {
+                // console.log(rooms)
+                this.rooms = rooms;
+                this.goChat(this.rooms.find(room => room.id === '5829b48266e5156306ba4dcf'));
+                this.stop();
+                this.top = 999;
+                this.rooms.map(room => {
+                    if (!room.name) {
+                        this.chatService.getRead(room.id, this.username).map(res => res.json()).subscribe(
+                            res => {
+                                // console.log(res);
+                                this.isRead[room.id] = res.count;
+                            }
+                        );
+                    }
+                    this.chatService.getRoomMessages(room.id).subscribe(
+                        msgs => {
+                            this.newMessage[room.id] = msgs.pop()
+                        }
+                    )
+                    this.chatService.joinRoom(room.id).subscribe();
+                })
+            });
+
 
 
         this.roomService.getNews().map(res => res.json()).subscribe(res => {
@@ -145,8 +140,6 @@ export class RoomComponent implements OnInit, OnDestroy {
                 this.news = res;
             });
         }, 600000);
-        this.username = this.cookieService.get('username');
-        this.userId = localStorage.getItem('userId');
 
         this.me = this.userService.getUser(this.userId);
         this.chatService.socket.on('message', (data) => {
@@ -159,7 +152,7 @@ export class RoomComponent implements OnInit, OnDestroy {
                     let room = data.room;
                     console.log(room);
                     this.rooms.push(room);
-                    this.chatService.joinRoom(room.id);
+                    this.chatService.joinRoom(room.id).subscribe();
                     this.newMessage[data.room.id] = data.msg;
                     if (this.selectedRoom && this.selectedRoom.id === data.room.id) {
                         return
@@ -212,8 +205,8 @@ export class RoomComponent implements OnInit, OnDestroy {
             .map(res => res.json())
             .subscribe((res) => {
                 this.rooms.push(res);
+                this.goChat(res);
                 this.chatService.joinRoom(res.id).subscribe(() => {
-                    this.goChat(res);
                 });
             });
     }
