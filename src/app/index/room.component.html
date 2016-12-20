@@ -6,8 +6,8 @@
     <p>{{user}}</p>
     <div *ngIf="rooms">
         <ul class="nav nav-pills nav-stacked" id="list" role="tablist">
-            <li class="item" [ngClass]="{active: selectedRoom===room}" role="presentation" style="cursor: pointer" *ngFor="let room of rooms;" (click)="goChat(room)">
-                <a href="javascript:;">
+            <li class="item" [ngClass]="{active: selectedRoom===room}" role="presentation" style="cursor: pointer" *ngFor="let room of rooms;" >
+                <a (click)="goChat(room)" href="javascript:;">
                     <i class="l1" *ngIf="room.name"></i>
                     <i class="l2" *ngIf="!room.name&&room.from.username!=me.username"></i>
                     <i class="l2" *ngIf="!room.name&&room.from.username===me.username"></i>

@@ -82,7 +82,7 @@ export class ChatService {
         this.socket.emit('join', roomId);
         let userId = localStorage.getItem('userId');
         let headers = this.setToken();
-        this.http.post(`${this.userUrl}/joinroom`, { room_id: roomId, user_id: userId }, { headers: headers }).subscribe();
+        return this.http.post(`${this.userUrl}/joinroom`, { room_id: roomId, user_id: userId }, { headers: headers });
         // this.socket.on('message',(msg)=>console.log(msg))
     }
 

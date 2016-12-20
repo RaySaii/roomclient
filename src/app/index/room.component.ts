@@ -59,6 +59,7 @@ export class RoomComponent implements OnInit, OnDestroy {
     selectedRoom: Room;
     selectedUser: User;
     none: boolean = false;
+    preUsers = [];
     users: User[] = [];
     me: User;
     news = [];
@@ -98,13 +99,44 @@ export class RoomComponent implements OnInit, OnDestroy {
     }
 
     ngOnInit() {
-        this.chatService.joinRoom('5829b48266e5156306ba4dcf');
-        this.chatService.joinRoom('5829b74f66e5156306ba4dd0');
-        this.start();
-        setTimeout(() => {
-            this.stop();
-            this.top = 999;
-        }, 2000);
+        this.start()
+        this.chatService.joinRoom('5829b48266e5156306ba4dcf').subscribe(() => {
+            // this.start();
+            // setTimeout(() => {
+
+            // }, 2000);
+            this.chatService.joinRoom('5829b74f66e5156306ba4dd0').subscribe(() => {
+                this.roomService.getRoomUsers('5829b74f66e5156306ba4dd0').map(res => res.json()).subscribe(res => {
+                    this.preUsers = res
+                });
+                this.roomService.getRooms(this.userId)
+                    .subscribe(rooms => {
+                        // console.log(rooms)
+                        this.rooms = rooms;
+                        this.goChat(this.rooms.find(room => room.id === '5829b48266e5156306ba4dcf'));
+                        this.stop();
+                        this.top = 999;
+                        this.rooms.map(room => {
+                            if (!room.name) {
+                                this.chatService.getRead(room.id, this.username).map(res => res.json()).subscribe(
+                                    res => {
+                                        // console.log(res);
+                                        this.isRead[room.id] = res.count;
+                                    }
+                                );
+                            }
+                            this.chatService.getRoomMessages(room.id).subscribe(
+                                msgs => {
+                                    this.newMessage[room.id] = msgs.pop()
+                                }
+                            )
+                            this.chatService.joinRoom(room.id)
+                        })
+                    });
+            });
+        });
+
+
         this.roomService.getNews().map(res => res.json()).subscribe(res => {
             this.news = res;
         });
@@ -115,29 +147,7 @@ export class RoomComponent implements OnInit, OnDestroy {
         }, 600000);
         this.username = this.cookieService.get('username');
         this.userId = localStorage.getItem('userId');
-        this.roomService.getRooms(this.userId)
-            .subscribe(rooms => {
-                // console.log(rooms)
-                this.rooms = rooms;
-                this.goChat(this.rooms[0]);
 
-                this.rooms.map(room => {
-                    if (!room.name) {
-                        this.chatService.getRead(room.id, this.username).map(res => res.json()).subscribe(
-                            res => {
-                                // console.log(res);
-                                this.isRead[room.id] = res.count;
-                            }
-                        );
-                    }
-                    this.chatService.getRoomMessages(room.id).subscribe(
-                        msgs => {
-                            this.newMessage[room.id] = msgs.pop()
-                        }
-                    )
-                    this.chatService.joinRoom(room.id)
-                })
-            });
         this.me = this.userService.getUser(this.userId);
         this.chatService.socket.on('message', (data) => {
             console.log(data);
@@ -182,6 +192,9 @@ export class RoomComponent implements OnInit, OnDestroy {
         })
         this.okId.subscribe((id) => {
             this.stateIds[id] = true;
+            this.roomService.getRoomUsers('5829b74f66e5156306ba4dd0').map(res => res.json()).subscribe(res => {
+                this.preUsers = res
+            });
         });
         this.chatService.socket.on('leave', (userId) => {
             this.leaveId.next(userId);
@@ -199,12 +212,14 @@ export class RoomComponent implements OnInit, OnDestroy {
             .map(res => res.json())
             .subscribe((res) => {
                 this.rooms.push(res);
-                this.chatService.joinRoom(res.id);
-                this.goChat(res);
+                this.chatService.joinRoom(res.id).subscribe(() => {
+                    this.goChat(res);
+                });
             });
     }
 
     goChat(room: Room) {
+        console.log('进入')
         if (this.selectedRoom === room) {
             return;
         }
@@ -219,16 +234,23 @@ export class RoomComponent implements OnInit, OnDestroy {
         this.isRead[room.id] = null;
         this.chatService.setRead(room.id, this.username).map(res => res.json()).subscribe();
         // this.router.navigate([id],{relativeTo:this.route})  
-        if (!room.from) {
-            this.roomService.getRoomUsers(room.id)
-                .map(res => res.json())
-                .subscribe(res => {
-                    for (let i = 0; i < res.length; i++) {
-                        setTimeout(() => this.users.push(res[i]), 100 * i);//延迟时间要变化
-                    }
-                });
+        if (room.id === '5829b74f66e5156306ba4dd0') {
+            console.log('选择')
+            this.roomService.getRoomUsers('5829b74f66e5156306ba4dd0').map(res => res.json()).subscribe(res => this.preUsers = res);
+            for (let i = 0; i < this.preUsers.length; i++) {
+                setTimeout(() => this.users.push(this.preUsers[i]), 100 * i);//延迟时间要变化
+            }
+            // this.roomService.getRoomUsers(room.id)
+            //     .switchMap(res => res.json())
+            //     .subscribe(res => {
+            //         console.log(res);
+            //         for (let i = 0; i < res.length; i++) {
+            //             setTimeout(() => this.users.push(res[i]), 100 * i);//延迟时间要变化
+            //         }
+            //         console.log(this.users);
+            //     });
         } else {
-            this.users = null;
+            this.users = [];
         }
     }
 
